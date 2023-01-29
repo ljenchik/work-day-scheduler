@@ -1,49 +1,73 @@
+let dayTasks = [];
+
 let currentDayEl = $("#currentDay");
 currentDayEl.text(moment().format("LLLL").split(" ").slice(0, 4).join(" "));
 
-
 let currentHour = moment().hour();
 // Append empty rows to the table
-let table = $('#projectTable');
+let table = $("#projectTable");
 
+function createTable() {
 
+  for (let i = 9; i < 24; i++) {
+    // Table row
+    let timeblock = $("<tr>").addClass("time-block").attr('data-index', i);
 
-for (let i = 9; i < 24; i++) {
-  let row = $("<tr>");
-  let time = $("<td>");
-  let task =  $("<td>");
-  let isCompleted =  $("<td>");
+    // Table cells
+    let time = $("<td>");
+    let task = $("<td>");
+    let save = $("<td>");
 
-  if (i < 12) {
-    time.append(
-      $("<p>")
-        .text(i + " am")
-        .css('width', '10%')
-    );
-  } else {
-    time.append(
-      $("<p>")
-        .text(i + " pm")
-        .css('width', '10%')
-    );
-  }
-  
-  task.append($("<p>")).css('width', '80%');
-  isCompleted.append('<i class="fa-solid fa-calendar-check fa-2xl"></i>');
-
-  row.append(time);
-  row.append(task);
-  row.append(isCompleted);
-  if (currentHour > parseInt(time.text().split(' ')[0])) {
-    row.addClass('past');
-  }
-    else if (currentHour === parseInt(time.text().split(' ')[0])) {
-        row.addClass('present');
+    // Add hours
+    if (i < 12) {
+      time.append($("<p>").text(i + " am"));
+    } else {
+      time.append($("<p>").text(i + " pm"));
     }
-    else {
-        row.addClass('future');
+
+    // Add input box for tasks
+    let inputEl = $("<input>").attr("data-index", i).addClass("textarea");
+    task.append(inputEl);
+
+    // Add icon for saving the task
+    save.append('<i class="fa-solid fa-floppy-disk fa-2x"></i>');
+
+    timeblock.append(time);
+    timeblock.append(task);
+    timeblock.append(save);
+
+    if (currentHour > parseInt(time.text().split(" ")[0])) {
+      timeblock.addClass("past");
+      inputEl.addClass("past");
+    } else if (currentHour === parseInt(time.text().split(" ")[0])) {
+      timeblock.addClass("present");
+      inputEl.addClass("present");
+    } else {
+      timeblock.addClass("future");
+      inputEl.addClass("future");
     }
-  table.append(row);
+
+    // Add row to the table
+    table.append(timeblock);
+
+    save.on('click', function() {
+        let text = $(this).parent().children().children('input').val();
+        console.log(text);
+        dayTasks.push({time: time.text().split(" ")[0], task: text});
+        console.log(dayTasks);
+    })
+
+    timeblock.on("click", function () {
+    });
 }
+
+
+
+}
+
+createTable();
+
+
+
 
 
