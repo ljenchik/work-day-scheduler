@@ -34,9 +34,9 @@ function createTable() {
     task.append(inputEl);
 
     // Add icon for saving the task
-    save.append('<i class="fa-solid fa-floppy-disk fa-2x"></i>');
+    save.append('<i class="fa-solid fa-floppy-disk"></i>').css('background', '#17a2b8cf');
 
-    timeblock.append(time)
+    timeblock.append(time).addClass("hour");
     timeblock.append(task);
     timeblock.append(save);
 
@@ -44,13 +44,13 @@ function createTable() {
     //console.log(timeblock.attr('data-index'));
 
     if (currentHour > parseInt(time.text().split(" ")[0])) {
-      timeblock.addClass("past");
+      task.addClass("past");
       inputEl.addClass("past");
     } else if (currentHour === parseInt(time.text().split(" ")[0])) {
-      timeblock.addClass("present");
+      task.addClass("present");
       inputEl.addClass("present");
     } else {
-      timeblock.addClass("future");
+      task.addClass("future");
       inputEl.addClass("future");
     }
 
@@ -102,3 +102,9 @@ function getTasks() {
 
 createTable();
 getTasks();
+
+
+
+// var inp = $("input");
+// inp.focus(function() { $(this).css("background-color", "blue"); });
+// inp.blur(function() { $(this).css("background-color", "red"); });
