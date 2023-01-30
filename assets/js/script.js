@@ -1,17 +1,15 @@
-let dayTasks = [];
+let dayTasks;
 
+// Display date in header
 let currentDayEl = $("#currentDay");
 currentDayEl.text(moment().format("LLLL").split(" ").slice(0, 4).join(" "));
-
 let currentHour = moment().hour();
-// Append empty rows to the table
 let table = $("#projectTable");
 
 function createTable() {
-
   for (let i = 9; i < 24; i++) {
     // Table row
-    let timeblock = $("<tr>").addClass("time-block").attr('data-index', i);
+    let timeblock = $("<tr>").addClass("time-block");
 
     // Table cells
     let time = $("<td>");
@@ -32,9 +30,9 @@ function createTable() {
     // Add icon for saving the task
     save.append('<i class="fa-solid fa-floppy-disk fa-2x"></i>');
 
-    timeblock.append(time);
-    timeblock.append(task);
-    timeblock.append(save);
+    timeblock.append(time).attr("data-index", i);
+    timeblock.append(task).attr("data-index", i);
+    timeblock.append(save).attr("data-index", i);
 
     if (currentHour > parseInt(time.text().split(" ")[0])) {
       timeblock.addClass("past");
@@ -50,24 +48,43 @@ function createTable() {
     // Add row to the table
     table.append(timeblock);
 
-    save.on('click', function() {
-        let text = $(this).parent().children().children('input').val();
-        console.log(text);
-        dayTasks.push({time: time.text().split(" ")[0], task: text});
-        console.log(dayTasks);
-    })
-
-    timeblock.on("click", function () {
+    // Save task to array of objects
+    save.on("click", function () {
+      let text = $(this).parent().children().children("input").val().trim();
+      let hour = time.text().split(" ")[0];
+      // Add to array if task is not empty
+      if (text) {
+        dayTasks[hour] = text;
+      }
+      // Delete if empty input
+      else {
+        delete dayTasks[hour];
+      }
+      console.log(dayTasks);
+      localStorage.setItem("tasks", JSON.stringify(dayTasks));
     });
+  }
 }
 
+function getTasks() {
+  createTable();
 
+  if (JSON.parse(localStorage.getItem("tasks").length > 0)) {
+    dayTasks = JSON.parse(localStorage.getItem("tasks"));
+  } else {
+    dayTasks = {};
+  }
+  console.log("dayTasks", dayTasks);
 
+  for (const [key, value] of Object.entries(dayTasks)) {
+    console.log(`${key}`);
+    console.log(`${value}`);
+
+    if (table.find(`[data-index=${key}]`)[1]) {
+      table.find(`[data-index=${key}]`)[1].replaceWith(`${value}`)
+        console.log(table.children().children().children('input').val(`${value}`));
+    }
+  }
 }
 
-createTable();
-
-
-
-
-
+getTasks();
