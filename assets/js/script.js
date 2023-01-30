@@ -16,11 +16,10 @@ function createTable() {
     // Table row
     timeblock = $("<tr>").addClass("time-block");
 
-
     // Table cells
-    let time = $("<td>");
+    let time = $("<td>").css('background', '#06aed5').addClass('time');
     let task = $("<td>");
-    let save = $("<td>");
+    let save = $("<td>").css('background', '#06aed5');
 
     // Add hours
     if (i < 12) {
@@ -30,13 +29,13 @@ function createTable() {
     }
 
     // Add input box for tasks
-    let inputEl = $("<input>").addClass("textarea");
+    let inputEl = $("<input>");
     task.append(inputEl);
 
     // Add icon for saving the task
-    save.append('<i class="fa-solid fa-floppy-disk"></i>').css('background', '#17a2b8cf');
+    save.append('<i class="fa-solid fa-floppy-disk"></i>').css('background', '#06aed5').addClass('saveBtn');
 
-    timeblock.append(time).addClass("hour");
+    timeblock.append(time);
     timeblock.append(task);
     timeblock.append(save);
 
