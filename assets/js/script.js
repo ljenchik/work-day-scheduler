@@ -1,15 +1,21 @@
-let dayTasks;
-
 // Display date in header
 let currentDayEl = $("#currentDay");
 currentDayEl.text(moment().format("LLLL").split(" ").slice(0, 4).join(" "));
 let currentHour = moment().hour();
+
 let table = $("#projectTable");
+let timeblock;
+
+let dayTasks = {}
+// Add date to clear tasks for the previous day
+dayTasks.date = moment().format("DD/MM/YYYY");
 
 function createTable() {
   for (let i = 9; i < 24; i++) {
+    
     // Table row
-    let timeblock = $("<tr>").addClass("time-block");
+    timeblock = $("<tr>").addClass("time-block");
+
 
     // Table cells
     let time = $("<td>");
@@ -24,15 +30,18 @@ function createTable() {
     }
 
     // Add input box for tasks
-    let inputEl = $("<input>").attr("data-index", i).addClass("textarea");
+    let inputEl = $("<input>").addClass("textarea");
     task.append(inputEl);
 
     // Add icon for saving the task
     save.append('<i class="fa-solid fa-floppy-disk fa-2x"></i>');
 
-    timeblock.append(time).attr("data-index", i);
-    timeblock.append(task).attr("data-index", i);
-    timeblock.append(save).attr("data-index", i);
+    timeblock.append(time)
+    timeblock.append(task);
+    timeblock.append(save);
+
+    timeblock.attr("data-index", i);
+    //console.log(timeblock.attr('data-index'));
 
     if (currentHour > parseInt(time.text().split(" ")[0])) {
       timeblock.addClass("past");
@@ -50,7 +59,7 @@ function createTable() {
 
     // Save task to array of objects
     save.on("click", function () {
-      let text = $(this).parent().children().children("input").val().trim();
+      let text = $(this).parent().children().children("input").val();
       let hour = time.text().split(" ")[0];
       // Add to array if task is not empty
       if (text) {
@@ -60,31 +69,36 @@ function createTable() {
       else {
         delete dayTasks[hour];
       }
-      console.log(dayTasks);
+      //console.log(dayTasks);
       localStorage.setItem("tasks", JSON.stringify(dayTasks));
     });
   }
 }
 
-function getTasks() {
-  createTable();
 
-  if (JSON.parse(localStorage.getItem("tasks").length > 0)) {
+
+function getTasks() {
+  if (JSON.parse(localStorage.getItem("tasks"))) {
     dayTasks = JSON.parse(localStorage.getItem("tasks"));
-  } else {
-    dayTasks = {};
   }
   console.log("dayTasks", dayTasks);
 
   for (const [key, value] of Object.entries(dayTasks)) {
-    console.log(`${key}`);
-    console.log(`${value}`);
-
-    if (table.find(`[data-index=${key}]`)[1]) {
-      table.find(`[data-index=${key}]`)[1].replaceWith(`${value}`)
-        console.log(table.children().children().children('input').val(`${value}`));
-    }
+    $('#projectTable > tbody > tr').each(function() { 
+      if (`${key}` ===  $(this).attr('data-index')) {
+        $(this).children().children('input').val(`${value}`);
+      };
+});
+    
   }
+
+  // Clear local storage from the previous day tasks
+  if (moment().format("DD/MM/YYYY") !== dayTasks.date) {
+    localStorage.clear();
+  }
+
 }
 
+
+createTable();
 getTasks();
