@@ -8,3 +8,8 @@ I created  a simple calendar application that allows a user to save events for e
 
 The app displays the current day at the top of the calender when a user opens the planner as well as color-coded timeblocks for standard business hours. Color-code for each each timeblock is based on past, present, and future when the timeblock is viewed. A user is able to to enter an event when they click a timeblock and save the event in local storage when the save button is clicked in that timeblock.
 
+
+<p float="center">
+<img src="./assets/screenshots/screenshot1.png"  width="300"/>
+<img src="./assets/screenshots/screenshot2.png"  width="300"/>
+</p>

@@ -57,8 +57,10 @@ function createTable() {
     table.append(timeblock);
 
     // Save task to array of objects
+    
     save.on("click", function () {
       let text = $(this).parent().children().children("input").val();
+    
       let hour = time.text().split(" ")[0];
       // Add to array if task is not empty
       if (text) {
@@ -68,7 +70,6 @@ function createTable() {
       else {
         delete dayTasks[hour];
       }
-      //console.log(dayTasks);
       localStorage.setItem("tasks", JSON.stringify(dayTasks));
     });
   }
@@ -83,6 +84,8 @@ function getTasks() {
   console.log("dayTasks", dayTasks);
 
   for (const [key, value] of Object.entries(dayTasks)) {
+    // Compare key from dayTasks array to data-index of each row which represents time to 
+    // determine which row to fill with the task in
     $('#projectTable > tbody > tr').each(function() { 
       if (`${key}` ===  $(this).attr('data-index')) {
         $(this).children().children('input').val(`${value}`);
@@ -95,15 +98,8 @@ function getTasks() {
   if (moment().format("DD/MM/YYYY") !== dayTasks.date) {
     localStorage.clear();
   }
-
 }
 
 
 createTable();
 getTasks();
-
-
-
-// var inp = $("input");
-// inp.focus(function() { $(this).css("background-color", "blue"); });
-// inp.blur(function() { $(this).css("background-color", "red"); });
